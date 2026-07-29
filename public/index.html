@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Support incident tracking with priority-based SLA deadlines."
+    />
+    <title>Incident SLA Tracker</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Incident SLA Tracker home">
+        <span class="brand-mark">IS</span>
+        <span>
+          <strong>Incident SLA Tracker</strong>
+          <small>Support operations</small>
+        </span>
+      </a>
+      <nav>
+        <a href="/docs" target="_blank" rel="noreferrer">API documentation</a>
+        <span class="health"><span class="health-dot"></span> Operational</span>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <span class="eyebrow">OPERATIONS OVERVIEW</span>
+          <h1>Keep every incident inside its SLA.</h1>
+          <p>Prioritize support work, track ownership, and surface risk before deadlines expire.</p>
+        </div>
+        <button class="button button-primary" id="open-create" type="button">
+          <span>+</span> New incident
+        </button>
+      </section>
+
+      <section class="metrics" aria-label="Incident metrics">
+        <article class="metric-card">
+          <span class="metric-label">Total incidents</span>
+          <strong id="metric-total">—</strong>
+          <small>All recorded work</small>
+        </article>
+        <article class="metric-card accent-blue">
+          <span class="metric-label">Open workload</span>
+          <strong id="metric-open">—</strong>
+          <small>Open and in progress</small>
+        </article>
+        <article class="metric-card accent-red">
+          <span class="metric-label">SLA overdue</span>
+          <strong id="metric-overdue">—</strong>
+          <small>Requires immediate attention</small>
+        </article>
+        <article class="metric-card accent-green">
+          <span class="metric-label">Closed</span>
+          <strong id="metric-closed">—</strong>
+          <small>Completed incidents</small>
+        </article>
+        <article class="metric-card accent-purple">
+          <span class="metric-label">Avg. resolution</span>
+          <strong id="metric-average">—</strong>
+          <small>Hours to resolve</small>
+        </article>
+      </section>
+
+      <section class="workspace">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">INCIDENT QUEUE</span>
+            <h2>Active support work</h2>
+          </div>
+          <span id="result-count" class="result-count">Loading incidents…</span>
+        </div>
+
+        <form class="filters" id="filters">
+          <label class="search-field">
+            <span class="sr-only">Search incidents</span>
+            <input name="search" type="search" placeholder="Search title or description…" />
+          </label>
+          <label>
+            <span class="sr-only">Filter by status</span>
+            <select name="status">
+              <option value="">All statuses</option>
+              <option value="OPEN">Open</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="RESOLVED">Resolved</option>
+              <option value="CLOSED">Closed</option>
+            </select>
+          </label>
+          <label>
+            <span class="sr-only">Filter by priority</span>
+            <select name="priority">
+              <option value="">All priorities</option>
+              <option value="CRITICAL">Critical</option>
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
+            </select>
+          </label>
+          <label>
+            <span class="sr-only">Filter by assignee</span>
+            <input name="assignee" placeholder="Assignee" />
+          </label>
+          <button class="button button-secondary" type="submit">Apply filters</button>
+          <button class="button button-ghost" id="clear-filters" type="button">Clear</button>
+        </form>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Incident</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Assignee</th>
+                <th>SLA deadline</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody id="incident-list">
+              <tr>
+                <td colspan="6" class="empty-state">Loading incident queue…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="error-banner" class="error-banner" role="alert" hidden></div>
+      </section>
+    </main>
+
+    <dialog id="create-dialog">
+      <form id="create-form">
+        <div class="dialog-heading">
+          <div>
+            <span class="eyebrow">NEW SUPPORT REQUEST</span>
+            <h2>Create incident</h2>
+            <p>The SLA deadline is calculated automatically from the selected priority.</p>
+          </div>
+          <button class="icon-button" id="close-create" type="button" aria-label="Close">×</button>
+        </div>
+        <div class="form-grid">
+          <label class="full">
+            Title
+            <input name="title" required minlength="3" maxlength="160" />
+          </label>
+          <label class="full">
+            Description
+            <textarea name="description" required minlength="5" maxlength="10000"></textarea>
+          </label>
+          <label>
+            Priority
+            <select name="priority" required>
+              <option value="LOW">Low · 72 hours</option>
+              <option value="MEDIUM" selected>Medium · 24 hours</option>
+              <option value="HIGH">High · 8 hours</option>
+              <option value="CRITICAL">Critical · 2 hours</option>
+            </select>
+          </label>
+          <label>
+            Assignee
+            <input name="assignee" placeholder="Unassigned" />
+          </label>
+        </div>
+        <div class="dialog-actions">
+          <button class="button button-ghost" id="cancel-create" type="button">Cancel</button>
+          <button class="button button-primary" type="submit">Create incident</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
