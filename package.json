@@ -1,0 +1,54 @@
+{
+  "name": "incident-sla-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.16.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=11.0.0"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "preview": "node scripts/preview-server.mjs",
+    "build": "prisma generate && tsc -p tsconfig.build.json && node scripts/copy-static.mjs",
+    "start": "node dist/server.js",
+    "lint": "eslint .",
+    "typecheck": "prisma generate && tsc --noEmit",
+    "test": "vitest run --exclude tests/integration/**",
+    "test:integration": "vitest run tests/integration",
+    "test:all": "vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "prisma generate && tsx prisma/seed.ts",
+    "ci": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@fastify/helmet": "13.1.0",
+    "@fastify/static": "10.1.2",
+    "@fastify/swagger": "9.8.1",
+    "@fastify/swagger-ui": "6.1.1",
+    "@prisma/adapter-pg": "7.9.1",
+    "@prisma/client": "7.9.1",
+    "fastify": "5.10.0",
+    "pg": "8.22.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.10.9",
+    "@types/pg": "8.20.0",
+    "eslint": "10.8.0",
+    "eslint-config-prettier": "10.1.8",
+    "prettier": "3.9.6",
+    "prisma": "7.9.1",
+    "tsx": "4.23.1",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.65.0",
+    "vitest": "4.1.10"
+  }
+}

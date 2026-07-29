@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "lib": ["ES2024", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": ".",
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": ["src", "tests", "prisma", "prisma.config.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist", "coverage"]
+}

@@ -1,0 +1,6 @@
+allowBuilds:
+  '@prisma/engines': true
+  esbuild: true
+  prisma: true
+minimumReleaseAgeExclude:
+  - '@fastify/swagger-ui@6.1.1'
