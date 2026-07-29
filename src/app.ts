@@ -58,6 +58,40 @@ export async function buildApp(options: {
     genReqId: (request) => String(request.headers['x-request-id'] ?? crypto.randomUUID()),
   });
 
+  app.setErrorHandler((error, request, reply) => {
+    const validationDetails = getValidationDetails(error);
+    const normalized =
+      error instanceof AppError
+        ? error
+        : error instanceof ZodError
+          ? new AppError('VALIDATION_ERROR', 'Request validation failed', 422, error.issues)
+          : validationDetails.found
+            ? new AppError(
+                'VALIDATION_ERROR',
+                'Request validation failed',
+                422,
+                validationDetails.details,
+              )
+            : new AppError(
+                'INTERNAL_ERROR',
+                options.config.NODE_ENV === 'production'
+                  ? 'An unexpected error occurred'
+                  : error instanceof Error
+                    ? error.message
+                    : 'Unexpected error',
+                500,
+              );
+    if (normalized.statusCode >= 500) request.log.error({ err: error }, 'request failed');
+    return reply.code(normalized.statusCode).send({
+      error: {
+        code: normalized.code,
+        message: normalized.message,
+        ...(normalized.details === undefined ? {} : { details: normalized.details }),
+        requestId: request.id,
+      },
+    });
+  });
+
   await app.register(helmet, {
     contentSecurityPolicy: {
       directives: {
@@ -202,40 +236,6 @@ export async function buildApp(options: {
       });
     }
     return reply.code(404).sendFile('index.html');
-  });
-
-  app.setErrorHandler((error, request, reply) => {
-    const validationDetails = getValidationDetails(error);
-    const normalized =
-      error instanceof AppError
-        ? error
-        : error instanceof ZodError
-          ? new AppError('VALIDATION_ERROR', 'Request validation failed', 422, error.issues)
-          : validationDetails.found
-            ? new AppError(
-                'VALIDATION_ERROR',
-                'Request validation failed',
-                422,
-                validationDetails.details,
-              )
-            : new AppError(
-                'INTERNAL_ERROR',
-                options.config.NODE_ENV === 'production'
-                  ? 'An unexpected error occurred'
-                  : error instanceof Error
-                    ? error.message
-                    : 'Unexpected error',
-                500,
-              );
-    if (normalized.statusCode >= 500) request.log.error({ err: error }, 'request failed');
-    return reply.code(normalized.statusCode).send({
-      error: {
-        code: normalized.code,
-        message: normalized.message,
-        ...(normalized.details === undefined ? {} : { details: normalized.details }),
-        requestId: request.id,
-      },
-    });
   });
 
   app.addHook('onClose', async () => db.$disconnect());
