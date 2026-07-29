@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:18.4-alpine3.23
+        env:
+          POSTGRES_DB: incident_sla_test
+          POSTGRES_USER: incident_test
+          POSTGRES_PASSWORD: integration_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U incident_test -d incident_sla_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql://incident_test:integration_test_password@localhost:5432/incident_sla_test?schema=public
+      TEST_DATABASE_URL: postgresql://incident_test:integration_test_password@localhost:5432/incident_sla_test?schema=public
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.1
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate database schema
+        run: pnpm db:validate
+
+      - name: Apply database migrations
+        run: pnpm db:deploy
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Run unit tests
+        run: pnpm test
+
+      - name: Run API integration tests
+        run: pnpm test:integration
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Build runtime container
+        run: docker build --target runtime --tag incident-sla-tracker:ci .

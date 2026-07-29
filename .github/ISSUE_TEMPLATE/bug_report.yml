@@ -1,0 +1,19 @@
+name: Bug report
+description: Report a reproducible defect
+title: 'bug: '
+body:
+  - type: textarea
+    attributes:
+      label: Description
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Environment
+      placeholder: Windows 11 with WSL2, Ubuntu 24.04, or similar

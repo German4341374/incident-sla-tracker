@@ -1,0 +1,81 @@
+name: incident-sla-tracker
+
+services:
+  postgres:
+    image: postgres:18.4-alpine3.23
+    environment:
+      POSTGRES_DB: incident_sla
+      POSTGRES_USER: incident_app
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local_development_password}
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/18/docker
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U incident_app -d incident_sla']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - backend
+    restart: unless-stopped
+
+  migrate:
+    build:
+      context: .
+      target: migrations
+    environment:
+      DATABASE_URL: postgresql://incident_app:${POSTGRES_PASSWORD:-local_development_password}@postgres:5432/incident_sla?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: 'no'
+
+  app:
+    build:
+      context: .
+      target: runtime
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      LOG_LEVEL: info
+      DATABASE_URL: postgresql://incident_app:${POSTGRES_PASSWORD:-local_development_password}@postgres:5432/incident_sla?schema=public
+    ports:
+      - '${APP_PORT:-3000}:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - frontend
+      - backend
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 5s
+      start_period: 10s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  frontend:
+  backend:
+    internal: true
