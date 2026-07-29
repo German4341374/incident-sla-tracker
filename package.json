@@ -13,7 +13,7 @@
     "preview": "node scripts/preview-server.mjs",
     "build": "prisma generate && tsc -p tsconfig.build.json && node scripts/copy-static.mjs",
     "start": "node dist/server.js",
-    "lint": "eslint .",
+    "lint": "prisma generate && eslint .",
     "typecheck": "prisma generate && tsc --noEmit",
     "test": "vitest run --exclude tests/integration/**",
     "test:integration": "vitest run tests/integration",
