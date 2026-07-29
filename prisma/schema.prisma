@@ -1,0 +1,55 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum IncidentPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model Incident {
+  id           String              @id @default(cuid())
+  title        String              @db.VarChar(160)
+  description  String              @db.Text
+  priority     IncidentPriority
+  status       IncidentStatus      @default(OPEN)
+  assignee     String?             @db.VarChar(120)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  slaDeadline  DateTime
+  resolvedAt   DateTime?
+  statusHistory IncidentStatusHistory[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([slaDeadline])
+  @@index([assignee])
+  @@map("incidents")
+}
+
+model IncidentStatusHistory {
+  id         String         @id @default(cuid())
+  incidentId String
+  fromStatus IncidentStatus?
+  toStatus   IncidentStatus
+  changedAt  DateTime       @default(now())
+  incident   Incident       @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  @@index([incidentId, changedAt])
+  @@map("incident_status_history")
+}
