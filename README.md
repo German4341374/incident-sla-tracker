@@ -3,9 +3,9 @@
 [![CI](https://github.com/German4341374/incident-sla-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/German4341374/incident-sla-tracker/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A compact support operations application for registering incidents, assigning ownership and
-tracking priority-based service-level deadlines. The project demonstrates a typed REST API,
-PostgreSQL data modelling, business rules, automated tests, containerization and CI.
+A small support operations application for registering incidents, assigning ownership and tracking
+priority-based service-level deadlines. The interesting parts are the SLA rules, status history,
+filtered search and consistent API validation rather than the size of the interface.
 
 ## Features
 
@@ -230,7 +230,7 @@ unit and API integration tests, builds the TypeScript application, and builds th
 - This portfolio application intentionally has no authentication. Do not expose it directly to
   the public internet without an authentication and authorization layer.
 
-## Future improvements
+## Possible next steps
 
 - Authentication and per-team authorization for a production deployment.
 - SLA pause calendars, business hours, holidays and escalation policies.
