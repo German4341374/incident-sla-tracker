@@ -2,5 +2,13 @@ allowBuilds:
   '@prisma/engines': true
   esbuild: true
   prisma: true
+overrides:
+  deepmerge-ts: 8.0.0
+  mysql2: 3.23.1
+  nanoid: 3.3.18
 minimumReleaseAgeExclude:
   - '@fastify/swagger-ui@6.1.1'
+  - deepmerge-ts@8.0.0
+  - fast-uri@3.1.6
+  - mysql2@3.23.1
+  - nanoid@3.3.18
