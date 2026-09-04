@@ -28,7 +28,7 @@
     "ci": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {
-    "@fastify/helmet": "13.1.0",
+    "@fastify/helmet": "13.1.1",
     "@fastify/static": "10.1.2",
     "@fastify/swagger": "9.8.1",
     "@fastify/swagger-ui": "6.1.1",
