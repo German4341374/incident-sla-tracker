@@ -3,9 +3,11 @@
 [![CI](https://github.com/German4341374/incident-sla-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/German4341374/incident-sla-tracker/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A small support operations application for registering incidents, assigning ownership and tracking
-priority-based service-level deadlines. The interesting parts are the SLA rules, status history,
-filtered search and consistent API validation rather than the size of the interface.
+Add a support incident, choose a priority, and assign someone to it. The app calculates the
+SLA deadline and shows which incidents are still open or already overdue.
+
+You can search and filter the list, change statuses, and see the history of each incident.
+The dashboard gives you a quick count and the average time to resolve them.
 
 ## Features
 
