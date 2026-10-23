@@ -35,13 +35,13 @@
     "@prisma/adapter-pg": "7.9.1",
     "@prisma/client": "7.9.1",
     "fastify": "5.12.1",
-    "pg": "8.22.0",
+    "pg": "8.23.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/node": "24.10.9",
-    "@types/pg": "8.20.0",
+    "@types/pg": "8.23.1",
     "eslint": "10.8.0",
     "eslint-config-prettier": "10.1.8",
     "prettier": "3.9.6",
